@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Home Page</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+	<link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body onload="loadItem()">
+
+<button id="LoadH" style="margin: 15px; padding: 10px;">Pic History</button>
+<button id="LoadRank" style="margin: 15px; padding: 10px;">Pic Rank</button>
+<button id="LoadA-All" style="margin: 15px; padding: 10px;">Pic A (All)</button>
+<button id="LoadA-Home" style="margin: 15px; padding: 10px;">Pic A (Home)</button>
+<button id="LoadB-All" style="margin: 15px; padding: 10px;">Pic B (All)</button>
+<button id="LoadB-Away" style="margin: 15px; padding: 10px;">Pic B (Away)</button>
+
+<ul class="showTable">
+	<li>
+		<div id="A-all"></div>
+		<div id="B-all"></div>
+		<div id="history"></div>
+	</li>
+	<li>
+		<div id="A-home"></div>
+		<div id="B-away"></div>
+	</li>
+</ul>
+
+<ul class="showTable">
+	<li>
+		<div id="rankTable"></div>
+	</li>
+</ul>
+
+<!-- <ul class="showTable">
+	<li>
+		<div id="rankTable"></div>
+	</li>
+</ul> -->
+
+<!-- # HISTORY -->
+<script id="history-template" type="text/template">
+	<table class="tableStat" cellspacing="1" cellpadding="2" align="center" border="0">
+		<tbody id="history-Body">
+			<tr class="trHead">
+				<td width="15%" height="40px">ลีก</td>
+				<td width="10%">เวลา</td>
+				<td width="25%">ทีม</td>
+				<td width="15%">คะแนน</td>
+				<td width="25%">ทีม</td>
+				<td width="10%">แฮนดี้แค็ป</td>
+			</tr>
+			{{#history}}
+				<tr class="trRow" style="background: {{setBg}};">
+					<td style="background: #{{cLeague}}; color: #FFF;">{{league}}</td>
+					<td>{{date}}</td>
+					<td><a href="#" style="color:#{{cA}}">{{teamA}}</a><font color="red" checkVisibleA="{{starA}}">*</font></td>
+					<td><a href="#"><span checkResultA="{{cScoreRedA}}">{{liveA}}</span>-<span checkResultB="{{cScoreRedB}}">{{liveB}}</span></a></td>
+					<td><a href="#" style="color:#{{cB}}">{{teamB}}</a><font color="red" checkVisibleB="{{starB}}">*</font></td>
+					<td><a href="#">{{odds}}</a></td>
+				</tr>
+			{{/history}}
+			<tr style="background: #fff;">
+				<td height="20px" colspan="6" style="padding-left:5px">
+					พบกัน&nbsp;<b>{{history.count}}</b>&nbsp;คู่,
+					<b>{{history.teamMaster}}:</b>&nbsp;ชนะ&nbsp;<b><font color="red">{{history.W}}</font></b>(<b><font color="red">{{history.percentW}}</font></b>),
+					เสมอ&nbsp;<b><font color="blue">{{history.D}}</font></b>(<b><font color="blue">{{history.percentD}}</font></b>),
+					แพ้&nbsp;<b><font color="green">{{history.L}}</font></b>(<b><font color="green">{{history.percentL}}</font></b>).
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</script>
+<!-- # END HISTORY -->
+
+<!-- # Rank Table -->
+<script id="rankTable-template" type="text/template">
+	{{#masterTable}}
+	<table bordercolor="#FFFFFF" cellpadding="2" cellspacing="0" width="100%" class="headTable" border="1">
+		<tbody>
+		<tr class="headRank">
+			<td width="8%">อันดับ</td>
+			<td width="30%">ชื่อทีม</td>
+			<td>แข่ง</td>
+			<td>ชนะ</td>
+			<td>เสมอ</td>
+			<td>แพ้</td>
+			<td>ได้</td>
+			<td>เสีย</td>
+			<td>แต้ม</td>
+		</tr>
+		{{#masterTable}}
+		{{#group}}
+		<tr>
+				<td colspan="11" style="font-weight: bold; padding-left: 12px; letter-spacing: 4px; background-color: #EEEEEE;">กลุ่ม {{group}}</td>
+		</tr>
+		{{/group}}
+		{{#.}}
+		<tr align="middle">
+			<td bgcolor="#{{cTeam}}">{{number}}</td>
+			<td class="oneLine" bgcolor="#{{cTeam}}"><a href="#" style="color:#000000">{{team}}</a></td>
+			<td bgcolor="#e0e0e0">{{match}}</td>
+			<td bgcolor="#e0e0e0">{{win}}</td>
+			<td bgcolor="#e0e0e0">{{draw}}</td>
+			<td bgcolor="#e0e0e0">{{lose}}</td>
+			<td bgcolor="#e0e0e0">{{getGoal}}</td>
+			<td bgcolor="#e0e0e0">{{loseGoal}}</td>
+			<td bgcolor="#33ccff">{{point}}</td>
+		</tr>
+		{{/.}}
+		{{/masterTable}}
+		</tbody>
+	</table>
+	{{/masterTable}}
+</script>
+<!-- # End rank table -->
+
+<!-- # A All -->
+<script id="A-all-template" type="text/template">
+	<table class="tableStat" cellspacing="1" cellpadding="2" align="center" border="0">
+		<tbody id="A-all-Body">
+			<tr class="trHead">
+				<td width="15%" height="40px">ลีก</td>
+				<td width="10%">เวลา</td>
+				<td width="30%">ทีม</td>
+				<td width="10%">คะแนน</td>
+				<td width="30%">ทีม</td>
+				<td width="5%"> </td>
+				<!-- <td width="5%"> </td> -->
+				<!-- <td width="10%">แฮนดี้แค็ป</td> -->
+			</tr>
+			{{#A.all}}
+				<tr class="trRow" style="background: {{setBg}};">
+					<td class="tdLeague" style="background: #{{cLeague}}; color: #FFF;">{{league}}</td>
+					<td class="d1">{{date}}</td>
+					<td><a href="#" style="color:#{{cA}}">{{teamA}}</a><font color="red" checkVisibleA="{{starA}}">*</font></td>
+					<td><a href="#"><span checkResultA="{{cScoreRedA}}">{{liveA}}</span>-<span checkResultB="{{cScoreRedB}}">{{liveB}}</span></a></td>
+					<td class="td_team_ana oneLine"><a href="#" style="color:#{{cB}}">{{teamB}}</a><font color="red" checkVisibleB="{{starB}}">*</font></td>
+					<td><font color="#{{cResult}}">{{result}}</font></td>
+					<!-- <td><a href="#">{{odds}}</a></td> -->
+				</tr>
+			{{/A.all}}
+			<tr style="background: #fff;">
+				<td height="20px" colspan="7" style="padding-left:5px">
+					พบกัน&nbsp;<b>{{A.allCount}}</b>&nbsp;คู่,
+					<b>&nbsp;:</b>&nbsp;ชนะ&nbsp;<b><font color="red">{{A.allW}}</font></b>(<b><font color="red">{{A.allPercentW}}</font></b>),
+					เสมอ&nbsp;<b><font color="blue">{{A.allD}}</font></b>(<b><font color="blue">{{A.allPercentD}}</font></b>),
+					แพ้&nbsp;<b><font color="green">{{A.allL}}</font></b>(<b><font color="green">{{A.allPercentL}}</font></b>).
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</script>
+<!-- # End A All -->
+
+<!-- # A home -->
+<script id="A-home-template" type="text/template">
+	<table class="tableStat" cellspacing="1" cellpadding="2" align="center" border="0" id="jfwj">
+		<tbody id="A-home-Body">
+			<tr class="trHead">
+				<td width="15%" height="40px">ลีก</td>
+				<td width="10%">เวลา</td>
+				<td width="30%">ทีม</td>
+				<td width="10%">คะแนน</td>
+				<td width="30%">ทีม</td>
+				<td width="5%"> </td>
+			</tr>
+			{{#A.home}}
+				<tr class="trRow" style="background: {{setBg}};">
+					<td class="tdLeague" style="background: #{{cLeague}}; color: #FFF;"><b>{{league}}</b></td>
+					<td class="d1">{{date}}</td>
+					<td><a href="#" style="color:#{{cA}}">{{teamA}}</a><font color="red" checkVisibleA="{{starA}}">*</font></td>
+					<td><a href="#"><span checkResultA="{{cScoreRedA}}">{{liveA}}</span>-<span checkResultB="{{cScoreRedB}}">{{liveB}}</span></a></td>
+					<td><a href="#" style="color:#{{cB}}">{{teamB}}</a><font color="red" checkVisibleB="{{starB}}">*</font></td>
+					<td><font color="#{{cResult}}">{{result}}</font></td>
+				</tr>
+			{{/A.home}}
+			<tr style="background: #fff;">
+				<td height="20px" colspan="7" style="padding-left:5px">
+					พบกัน&nbsp;<b>{{A.homeCount}}</b>&nbsp;คู่,
+					<b>&nbsp;:</b>&nbsp;ชนะ&nbsp;<b><font color="red">{{A.homeW}}</font></b>(<b><font color="red">{{A.homePercentW}}</font></b>),
+					เสมอ&nbsp;<b><font color="blue">{{A.homeD}}</font></b>(<b><font color="blue">{{A.homePercentD}}</font></b>),
+					แพ้&nbsp;<b><font color="green">{{A.homeL}}</font></b>(<b><font color="green">{{A.homePercentL}}</font></b>).
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</script>
+<!-- # End A home -->
+
+<!-- # B All -->
+<script id="B-all-template" type="text/template">
+	<table class="tableStat" cellspacing="1" cellpadding="2" align="center" border="0">
+		<tbody id="B-all-Body">
+			<tr class="trHead">
+				<td width="15%" height="40px">ลีก</td>
+				<td width="10%">เวลา</td>
+				<td width="30%">ทีม</td>
+				<td width="10%">คะแนน</td>
+				<td width="30%">ทีม</td>
+				<td width="5%"> </td>
+			</tr>
+			{{#B.all}}
+				<tr class="trRow" style="background: {{setBg}};">
+					<td class="tdLeague" style="background: #{{cLeague}}; color: #FFF;">{{league}}</td>
+					<td class="d1">{{date}}</td>
+					<td><a href="#" style="color:#{{cA}}">{{teamA}}</a><font color="red" checkVisibleA="{{starA}}">*</font></td>
+					<td><a href="#"><span checkResultA="{{cScoreRedA}}">{{liveA}}</span>-<span checkResultB="{{cScoreRedB}}">{{liveB}}</span></a></td>
+					<td class="td_team_ana oneLine"><a href="#" style="color:#{{cB}}">{{teamB}}</a><font color="red" checkVisibleB="{{starB}}">*</font></td>
+					<td><font color="#{{cResult}}">{{result}}</font></td>
+				</tr>
+			{{/B.all}}
+			<tr style="background: #fff;">
+				<td height="20px" colspan="7" style="padding-left:5px">
+					พบกัน&nbsp;<b>{{B.allCount}}</b>&nbsp;คู่,
+					<b>&nbsp;:</b>&nbsp;ชนะ&nbsp;<b><font color="red">{{B.allW}}</font></b>(<b><font color="red">{{B.allPercentW}}</font></b>),
+					เสมอ&nbsp;<b><font color="blue">{{B.allD}}</font></b>(<b><font color="blue">{{B.allPercentD}}</font></b>),
+					แพ้&nbsp;<b><font color="green">{{B.allL}}</font></b>(<b><font color="green">{{B.allPercentL}}</font></b>).
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</script>
+<!-- # End B All -->
+
+<!-- # B away -->
+<script id="B-away-template" type="text/template">
+	<table class="tableStat" cellspacing="1" cellpadding="2" align="center" border="0" id="jfwj">
+		<tbody id="B-away-Body">
+			<tr class="trHead">
+				<td width="15%" height="40px">ลีก</td>
+				<td width="10%">เวลา</td>
+				<td width="30%">ทีม</td>
+				<td width="10%">คะแนน</td>
+				<td width="30%">ทีม</td>
+				<td width="5%"> </td>
+			</tr>
+			{{#B.away}}
+				<tr class="trRow" style="background: {{setBg}};">
+					<td class="tdLeague" style="background: #{{cLeague}}; color: #FFF;"><b>{{league}}</b></td>
+					<td class="d1">{{date}}</td>
+					<td><a href="#" style="color:#{{cA}}">{{teamA}}</a><font color="red" checkVisibleA="{{starA}}">*</font></td>
+					<td><a href="#"><span checkResultA="{{cScoreRedA}}">{{liveA}}</span>-<span checkResultB="{{cScoreRedB}}">{{liveB}}</span></a></td>
+					<td><a href="#" style="color:#{{cB}}">{{teamB}}</a><font color="red" checkVisibleB="{{starB}}">*</font></td>
+					<td><font color="#{{cResult}}">{{result}}</font></td>
+				</tr>
+			{{/B.away}}
+			<tr style="background: #fff;">
+				<td height="20px" colspan="7" style="padding-left:5px">
+					พบกัน&nbsp;<b>{{B.awayCount}}</b>&nbsp;คู่,
+					<b>&nbsp;:</b>&nbsp;ชนะ&nbsp;<b><font color="red">{{B.awayW}}</font></b>(<b><font color="red">{{B.awayPercentW}}</font></b>),
+					เสมอ&nbsp;<b><font color="blue">{{B.awayD}}</font></b>(<b><font color="blue">{{B.awayPercentD}}</font></b>),
+					แพ้&nbsp;<b><font color="green">{{B.awayL}}</font></b>(<b><font color="green">{{B.awayPercentL}}</font></b>).
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</script>
+<!-- # End B away -->
+
+<script src="/js/libs/jquery.min.js"></script>
+<script src="/js/libs/filesaver.js"></script>
+<script src="/js/libs/mustache.js"></script>
+<script src="/js/libs/lodash.min.js"></script>
+<script src="/js/libs/dom-to-image.min.js"></script>
+
+<script src="/js/utils/setData.js"></script>
+<script src="/js/utils/setRankTable.js"></script>
+<script src="/js/utils/createModel.js"></script>
+<script src="/js/index.js"></script>
+</body>
+
+</html>
