@@ -145,9 +145,21 @@ function createModel (data, history) {
         liveA: history.historymatch.liveA[i].toString(),
         liveB: history.historymatch.liveB[i].toString(),
         result: history.historymatch.worl[i],
+        realSumResult: checkRealResult(history.historymatch.worl[i], history.historymatch.aid[i]),
         odds: history.historymatch.rq[i],
         date: history.historymatch.date[i]
       };
+
+      function checkRealResult(result, teamA) {
+        if (result === "เสมอ") {
+          return result;
+        } else if ((teamA === teamMaster) && (result === "ชนะ")) {
+          return result;
+        } else {
+          return "แพ้";
+        }
+      }
+      
       // set bg
       if (i%2 === 0) {
         temp.setBg = 'rgb(198, 228, 245)';
@@ -213,16 +225,16 @@ function createModel (data, history) {
       model[criteria][match+'D'] = getD > 0 ? getD : 0;
       model[criteria][match+'L'] = getL > 0 ? getL : 0;
       model[criteria][match+'Count'] = model[criteria][match+'W'] + model[criteria][match+'D'] + model[criteria][match+'L']
-      model[criteria][match+'PercentW'] = ((model[criteria][match+'W']/model[criteria][match+'Count']) * 100) + '.00%';
-      model[criteria][match+'PercentD'] = ((model[criteria][match+'D']/model[criteria][match+'Count']) * 100) + '.00%';
-      model[criteria][match+'PercentL']= ((model[criteria][match+'L']/model[criteria][match+'Count']) * 100) + '.00%';
+      model[criteria][match+'PercentW'] = ((model[criteria][match+'W']/model[criteria][match+'Count']) * 100).toFixed(2) + '%';
+      model[criteria][match+'PercentD'] = ((model[criteria][match+'D']/model[criteria][match+'Count']) * 100).toFixed(2) + '%';
+      model[criteria][match+'PercentL']= ((model[criteria][match+'L']/model[criteria][match+'Count']) * 100).toFixed(2) + '%';
     });
   });
 
   // set W/D/L in history
-  var countW = _.countBy(model.history, function(item) { return item.result === "ชนะ"});
-  var countD = _.countBy(model.history, function(item) { return item.result === "เสมอ"});
-  var countL = _.countBy(model.history, function(item) { return item.result === "แพ้"});
+  var countW = _.countBy(model.history, function(item) { return item.realSumResult === "ชนะ" });
+  var countD = _.countBy(model.history, function(item) { return item.realSumResult === "เสมอ"});
+  var countL = _.countBy(model.history, function(item) { return item.realSumResult === "แพ้"});
   // get Value
   var getW = _.get(countW, 'true');
   var getD = _.get(countD, 'true');
@@ -232,9 +244,9 @@ function createModel (data, history) {
   model.history.D = getD > 0 ? getD : 0;
   model.history.L = getL > 0 ? getL : 0;
   model.history.count = model.history.W + model.history.D + model.history.L;
-  model.history.percentW = ((model.history.W/model.history.count) * 100) + '.00%';
-  model.history.percentD = ((model.history.D/model.history.count) * 100) + '.00%';
-  model.history.percentL = ((model.history.L/model.history.count) * 100) + '.00%';
+  model.history.percentW = ((model.history.W/model.history.count) * 100).toFixed(2) + '%';
+  model.history.percentD = ((model.history.D/model.history.count) * 100).toFixed(2) + '%';
+  model.history.percentL = ((model.history.L/model.history.count) * 100).toFixed(2) + '%';
   model.history.teamMaster = teamMaster;
 
   // return

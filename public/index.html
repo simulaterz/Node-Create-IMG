@@ -11,40 +11,45 @@
 
 <body onload="loadItem()">
 
-<button id="LoadH" style="margin: 15px; padding: 10px;">Pic History</button>
-<button id="LoadRank" style="margin: 15px; padding: 10px;">Pic Rank</button>
-<button id="LoadA-All" style="margin: 15px; padding: 10px;">Pic A (All)</button>
-<button id="LoadA-Home" style="margin: 15px; padding: 10px;">Pic A (Home)</button>
-<button id="LoadB-All" style="margin: 15px; padding: 10px;">Pic B (All)</button>
-<button id="LoadB-Away" style="margin: 15px; padding: 10px;">Pic B (Away)</button>
+<button id="LoadH" style="margin: 10px; padding: 10px;">Pic HisT</button>
+<button id="LoadRank" style="margin: 10px; padding: 10px;">Pic Table</button>
+<button id="LoadA-All" style="margin: 10px; padding: 10px;">Pic A (All)</button>
+<button id="LoadA-Home" style="margin: 10px; padding: 10px;">Pic A (H)</button>
+<button id="LoadB-All" style="margin: 10px; padding: 10px;">Pic B (All)</button>
+<button id="LoadB-Away" style="margin: 10px; padding: 10px;">Pic B (A)</button>
+<button style="margin: 10px; padding: 10px;" onclick="window.open('http://th.soccerway.com/')">SoccerWay</button>
+<button style="margin: 10px; padding: 10px;" onclick="window.open('https://www.whoscored.com')">WhoScored</button>
+<button style="margin: 10px; padding: 10px;" onclick="showElement()">X</button>
+
+<div id="gameInfo"></div>
 
 <ul class="showTable">
 	<li>
 		<div id="A-all"></div>
 		<div id="B-all"></div>
-		<div id="history"></div>
 	</li>
-	<li>
+	<li style="margin-top:15px">
 		<div id="A-home"></div>
 		<div id="B-away"></div>
 	</li>
+	<span id="hideElement" style="display:none;">
+		<li>
+			<div id="history"></div>
+		</li>
+		<li>
+			<div id="rank"></div>
+		</li>
+	</span>
 </ul>
 
-<ul class="showTable">
-	<li>
-		<div id="rankTable"></div>
-	</li>
-</ul>
-
-<!-- <ul class="showTable">
-	<li>
-		<div id="rankTable"></div>
-	</li>
-</ul> -->
+<script id="gameInfo-template" type="text/template">
+	<span style="color: #003300;">{{gameInfo.mname}}</span> / {{gameInfo.taname}} [{{gameInfo.tarank}}] | <span style="color:darkgreen;">{{gameInfo.handicap}}</span> | {{gameInfo.tbname}} [{{gameInfo.tbrank}}] /
+	{{#model.history}} <span checkColor={{realSumResult}}>{{realSumResult}}</span>{{/model.history}}
+</script>
 
 <!-- # HISTORY -->
 <script id="history-template" type="text/template">
-	<table class="tableStat" cellspacing="1" cellpadding="2" align="center" border="0">
+	<table class="tableHistory" cellspacing="1" cellpadding="2" align="center" border="0">
 		<tbody id="history-Body">
 			<tr class="trHead">
 				<td width="15%" height="40px">ลีก</td>
@@ -79,43 +84,44 @@
 
 <!-- # Rank Table -->
 <script id="rankTable-template" type="text/template">
-	{{#masterTable}}
-	<table bordercolor="#FFFFFF" cellpadding="2" cellspacing="0" width="100%" class="headTable" border="1">
-		<tbody>
-		<tr class="headRank">
-			<td width="8%">อันดับ</td>
-			<td width="30%">ชื่อทีม</td>
-			<td>แข่ง</td>
-			<td>ชนะ</td>
-			<td>เสมอ</td>
-			<td>แพ้</td>
-			<td>ได้</td>
-			<td>เสีย</td>
-			<td>แต้ม</td>
-		</tr>
-		{{#masterTable}}
-		{{#group}}
-		<tr>
-				<td colspan="11" style="font-weight: bold; padding-left: 12px; letter-spacing: 4px; background-color: #EEEEEE;">กลุ่ม {{group}}</td>
-		</tr>
-		{{/group}}
-		{{#.}}
-		<tr align="middle">
-			<td bgcolor="#{{cTeam}}">{{number}}</td>
-			<td class="oneLine" bgcolor="#{{cTeam}}"><a href="#" style="color:#000000">{{team}}</a></td>
-			<td bgcolor="#e0e0e0">{{match}}</td>
-			<td bgcolor="#e0e0e0">{{win}}</td>
-			<td bgcolor="#e0e0e0">{{draw}}</td>
-			<td bgcolor="#e0e0e0">{{lose}}</td>
-			<td bgcolor="#e0e0e0">{{getGoal}}</td>
-			<td bgcolor="#e0e0e0">{{loseGoal}}</td>
-			<td bgcolor="#33ccff">{{point}}</td>
-		</tr>
-		{{/.}}
-		{{/masterTable}}
+	<table bordercolor="#FFFFFF" cellpadding="2" cellspacing="0" width="100%" class="headTable" border="1" align="center">
+		<tbody id="rankTable">
+			<tr class="headRank">
+				<td width="8%">อันดับ</td>
+				<td width="30%">ชื่อทีม</td>
+				<td>แข่ง</td>
+				<td>ชนะ</td>
+				<td>เสมอ</td>
+				<td>แพ้</td>
+				<td>ได้</td>
+				<td>เสีย</td>
+				<td>แต้ม</td>
+			</tr>
+			{{#masterTable}}
+			{{#group}}
+			<tr>
+					<td colspan="11" style="font-weight: bold; padding-left: 12px; letter-spacing: 4px; background-color: #EEEEEE;">กลุ่ม {{group}}</td>
+			</tr>
+			{{/group}}
+			{{#.}}
+			<tr align="middle">
+				<td bgcolor="#{{cTeam}}">{{number}}</td>
+				<td class="oneLine" bgcolor="#{{cTeam}}"><a href="#" style="color:#000000">{{team}}</a></td>
+				<td bgcolor="#e0e0e0">{{match}}</td>
+				<td bgcolor="#e0e0e0">{{win}}</td>
+				<td bgcolor="#e0e0e0">{{draw}}</td>
+				<td bgcolor="#e0e0e0">{{lose}}</td>
+				<td bgcolor="#e0e0e0">{{getGoal}}</td>
+				<td bgcolor="#e0e0e0">{{loseGoal}}</td>
+				<td bgcolor="#33ccff">{{point}}</td>
+			</tr>
+			{{/.}}
+			<tr>
+					<td colspan="11" style="font-weight: bold; padding-left: 12px; letter-spacing: 4px; background-color: #FFFFFF;">&nbsp;</td>
+			</tr>
+			{{/masterTable}}
 		</tbody>
 	</table>
-	{{/masterTable}}
 </script>
 <!-- # End rank table -->
 

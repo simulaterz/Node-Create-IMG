@@ -5,14 +5,20 @@ function loadItem () {
 
   $.get(apiPath, function(information){
     var information = JSON.parse(information);
+
+    console.log(information);
+
     // setup data
     var data = information.gameData;
     var history = information.gameHistory;
     var rankTable = information.rankTable;
+    var gameInfo = information.gameInfo;
 
     // Obj are by ref-
     setData(data, history);
     var model = createModel(data, history);
+
+    document.title = gameInfo.taname + ' Vs ' + gameInfo.tbname;
 
     // Check api rankTable is exist
     if (rankTable) {
@@ -22,14 +28,14 @@ function loadItem () {
     };
 
     // history
+    var gameInfoTemplate = $('#gameInfo-template').html();
+    var gameInfoHtml = Mustache.render(gameInfoTemplate, {gameInfo,model});
+    $('#gameInfo').html(gameInfoHtml);
+
+    // history
     var historyTemplate = $('#history-template').html();
     var historyHtml = Mustache.render(historyTemplate, model);
     $('#history').html(historyHtml);
-
-    // rank table
-    var rankTableTemplate = $('#rankTable-template').html();
-    var rankTableHtml = Mustache.render(rankTableTemplate, masterTable);
-    $('#rankTable').html(rankTableHtml);
 
     // A all
     var aAllTemplate = $('#A-all-template').html();
@@ -48,6 +54,11 @@ function loadItem () {
     var bAwayTemplate = $('#B-away-template').html();
     var bAwayHtml = Mustache.render(bAwayTemplate, model);
     $('#B-away').html(bAwayHtml);
+
+    // rank table
+    var rankTableTemplate = $('#rankTable-template').html();
+    var rankTableHtml = Mustache.render(rankTableTemplate, masterTable);
+    $('#rank').html(rankTableHtml);
 
     // Action
     $("#LoadH").click(function() {
@@ -117,4 +128,18 @@ function getParameterByName(name, url) {
     if (!results) return null;
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+// show element
+function showElement() {
+    var hideElement = document.getElementById("hideElement");
+    if (hideElement.style.display === "none") {
+      hideElement.style.display = "block";
+    } else {
+      hideElement.style.display = "none";
+    }
+    
+    $('html,body').animate({
+        scrollTop: $("#hideElement").offset().top},
+    'slow');
 }

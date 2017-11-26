@@ -15,6 +15,7 @@ function setData(data, history) {
     };
 
     sub.forEach(function(match) {
+      // history home
       data[criteria][match].history.aid = _.map(data[criteria][match].history.aid, function(key) {
         if(!key) { return '' };
         return data.team[key];
