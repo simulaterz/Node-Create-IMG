@@ -19,6 +19,13 @@ function loadItem () {
     var model = createModel(data, history);
 
     document.title = gameInfo.taname + ' Vs ' + gameInfo.tbname;
+    //set default text area
+    // setDefaultText({
+    //   data: data,
+    //   history: history,
+    //   rankTable: rankTable,
+    //   gameInfo, gameInfo
+    // });
 
     // Check api rankTable is exist
     if (rankTable) {
@@ -119,6 +126,18 @@ function loadItem () {
   });
 };
 
+// set up default text
+function setDefaultText(obj) {
+  var myTextArea = $('#inputTextToSave');
+  var gameInfo = obj.gameInfo;
+
+  var teamA = gameInfo.taname;
+  var teamB = gameInfo.tbname;
+  var handicap = gameInfo.handicap;
+
+  myTextArea.val(myTextArea.val() + teamA + ' ' + teamB + ' '+ handicap);
+}
+
 // GET PARAMS
 function getParameterByName(name, url) {
     if (!url) url = window.location.href;
@@ -138,8 +157,47 @@ function showElement() {
     } else {
       hideElement.style.display = "none";
     }
-    
+
     $('html,body').animate({
         scrollTop: $("#hideElement").offset().top},
     'slow');
+}
+
+// save text filesaver
+function saveTextAsFile()
+{
+    var textToSave = document.getElementById("inputTextToSave").value;
+    var textToSaveAsBlob = new Blob([textToSave], {type:"text/plain"});
+    var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
+    var fileNameToSaveAs = parseInt(getParameterByName("id"));
+
+    var downloadLink = document.createElement("a");
+    downloadLink.download = fileNameToSaveAs;
+    downloadLink.innerHTML = "Download File";
+    downloadLink.href = textToSaveAsURL;
+    downloadLink.onclick = destroyClickedElement;
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+
+    downloadLink.click();
+}
+
+// load txt file
+function loadFileAsText()
+{
+    var fileToLoad = document.getElementById("fileToLoad").files[0];
+
+    var fileReader = new FileReader();
+    fileReader.onload = function(fileLoadedEvent)
+    {
+        var textFromFileLoaded = fileLoadedEvent.target.result;
+        document.getElementById("inputTextToSave").value = textFromFileLoaded;
+    };
+    fileReader.readAsText(fileToLoad, "UTF-8");
+}
+
+// remove btn element
+function destroyClickedElement(event)
+{
+    document.body.removeChild(event.target);
 }

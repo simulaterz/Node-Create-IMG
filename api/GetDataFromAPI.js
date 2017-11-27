@@ -50,7 +50,7 @@ function createArrayOfUrl(resolve, reject) {
 };
 
 function getData(number) {
-  var url = 'http://analyse.7m.cn/'+ parseInt(number) +'/data/gameteamhistory_th.js';
+  var url = 'http://analyse.7m.cn/data/'+ parseInt(number) +'/gameteamhistory_th.js';
   var data = request(url).then((body) => { return JSON.parse(body.substring(22)); })
   .then((arrayOfItem) => { return arrayOfItem; })
   .catch((ex) => { throw (ex); })
@@ -58,7 +58,7 @@ function getData(number) {
 };
 
 function getHistory(number) {
-  var url = 'http://analyse.7m.cn/'+ parseInt(number) +'/data/gamehistory_th.js';
+  var url = 'http://analyse.7m.cn/data/'+ parseInt(number) +'/gamehistory_th.js';
   var data = request(url).then((body) => { return JSON.parse(body.substring(18)); })
   .then((arrayOfItem) => { return arrayOfItem; })
   .catch((ex) => { throw (ex); })
@@ -74,7 +74,7 @@ function getRankTable(number) {
 };
 
 function getInfo(number) {
-  var url = 'http://analyse.7m.com.cn/' + parseInt(number) + '/data/gameinfo_th.js';
+  var url = 'http://analyse.7m.com.cn/data/' + parseInt(number) + '/gameinfo_th.js';
   var data = request(url).then((body) => { return JSON.parse(body.substring(15)); })
   .then((arrayOfItem) => { return arrayOfItem; })
   .catch((ex) => { throw (ex); })

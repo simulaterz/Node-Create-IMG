@@ -23,28 +23,39 @@
 
 <div id="gameInfo"></div>
 
-<ul class="showTable">
-	<li>
-		<div id="A-all"></div>
-		<div id="B-all"></div>
-	</li>
-	<li style="margin-top:15px">
-		<div id="A-home"></div>
-		<div id="B-away"></div>
-	</li>
-	<span id="hideElement" style="display:none;">
+<div class="textDiv" style="background-color:darkgray;">
+	<textarea id="inputTextToSave" cols="49" rows="20"></textarea>
+	<button style="margin: 5px 0px 0px 0; padding: 10px 20px; float: right; font-weight: bold;" onclick="saveTextAsFile()">Save File</button>
+	<button style="margin: 5px 10px 0px 0; padding: 10px; float: left;" onclick="loadFileAsText()">Load File</button>
+	<input style="margin: 5px 10px 0px 0; padding: 10px; float: left;" type="file" id="fileToLoad">
+</div>
+
+<div class="bodyDiv">
+	<ul class="showTable">
 		<li>
-			<div id="history"></div>
+			<div id="A-all"></div>
+			<div id="B-all"></div>
 		</li>
-		<li>
-			<div id="rank"></div>
+		<li style="margin-top:15px">
+			<div id="A-home"></div>
+			<div id="B-away"></div>
 		</li>
-	</span>
-</ul>
+		<span id="hideElement" style="display:none;">
+			<li>
+				<div id="history"></div>
+			</li>
+			<li>
+				<div id="rank"></div>
+			</li>
+		</span>
+	</ul>
+</div>
+
+
 
 <script id="gameInfo-template" type="text/template">
 	<span style="color: #003300;">{{gameInfo.mname}}</span> / {{gameInfo.taname}} [{{gameInfo.tarank}}] | <span style="color:darkgreen;">{{gameInfo.handicap}}</span> | {{gameInfo.tbname}} [{{gameInfo.tbrank}}] /
-	{{#model.history}} <span checkColor={{realSumResult}}>{{realSumResult}}</span>{{/model.history}}
+	{{#model.history}} <span checkColor={{realSumResult}}>{{realSumResult}}</span>{{/model.history}} / <span style="color:gray">{{gameInfo.updatedtime}}</span>
 </script>
 
 <!-- # HISTORY -->
