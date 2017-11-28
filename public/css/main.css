@@ -39,3 +39,5 @@ li {list-style:none;}
 [checkColor="ชนะ"] {color: #cc0000;}
 [checkColor="เสมอ"] {color: darkblue;}
 [checkColor="แพ้"] {color: darkgreen;}
+
+[checkHDCP^='-'] { display: none; }

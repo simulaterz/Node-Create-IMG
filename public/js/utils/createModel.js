@@ -151,15 +151,18 @@ function createModel (data, history) {
       };
 
       function checkRealResult(result, teamA) {
+        console.log(result + ' ' + teamA + ' ' + teamMaster);
         if (result === "เสมอ") {
+          console.log("เสมอ");
           return result;
-        } else if ((teamA === teamMaster) && (result === "ชนะ")) {
-          return result;
+        } else if (((teamA === teamMaster) && (result === "ชนะ")) || ((teamA !== teamMaster) && (result === "แพ้"))) {
+          return "ชนะ";
         } else {
+          console.log("แพ้");
           return "แพ้";
         }
       }
-      
+
       // set bg
       if (i%2 === 0) {
         temp.setBg = 'rgb(198, 228, 245)';

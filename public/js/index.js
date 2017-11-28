@@ -158,18 +158,18 @@ function showElement() {
       hideElement.style.display = "none";
     }
 
-    $('html,body').animate({
-        scrollTop: $("#hideElement").offset().top},
-    'slow');
+    // $('html,body').animate({
+    //     scrollTop: $("#hideElement").offset().top},
+    // 'slow');
 }
 
 // save text filesaver
 function saveTextAsFile()
 {
     var textToSave = document.getElementById("inputTextToSave").value;
-    var textToSaveAsBlob = new Blob([textToSave], {type:"text/plain"});
+    var textToSaveAsBlob = new Blob([textToSave], {type:"text/csv"});
     var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
-    var fileNameToSaveAs = parseInt(getParameterByName("id"));
+    var fileNameToSaveAs = parseInt(getParameterByName("id")) + '.csv';
 
     var downloadLink = document.createElement("a");
     downloadLink.download = fileNameToSaveAs;
